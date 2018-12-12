@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Socket.io</title>
+</head>
+
+<body>
+    <h1>Communication temps réel avec websocket.io</h1>
+    <h2>Un chat mieux que Discord</h2>
+
+
+    <p>
+        <form>
+            <input type="text" value="tutu" id="msgchat" autofocus />
+            <input type="button" value="Envoyer" id="sendmsg" />
+        </form>
+    </p>
+
+
+    <!--Au chargement de la page, on demande un pseudo pour identifier le client-->
+    <script>
+        var pseudo = prompt('Pseudo ?', "client");
+        document.title = "Socket.io - " + pseudo;
+    </script>
+
+    <!--on fait récupérer au client le fichier socket.io.js (fourni par node.js via socket.io -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+
+    <!--On peut commencer à faire des actions côté client; on commence par se connecter-->
+    <script>
+        //on initie la connection au serveur
+        var socket = io.connect('http://localhost:8080');
+        //on indique au serveur le pseudo du client
+        socket.emit('username', pseudo);
+        //écoute des messages de type 'message' (popups)
+        socket.on('message', function (message) {
+            alert('Le serveur vous indique : ' + message);
+        });
+        //écoute des messages de type 'messageLog' (évènements à afficher dans le chat)
+        socket.on('messageLog', function (messageLog) {
+
+        });
+
+        //on envoie le message au serveur
+        document.querySelector('#sendmsg').onclick = function () {
+            
+            socket.emit('messageChat', document.querySelector('#msgchat').value);
+        };
+
+        
+
+    </script>
+</body>
+
+</html>
