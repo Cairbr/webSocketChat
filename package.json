@@ -12,5 +12,8 @@
         "npm": "~6.4.1"
     },
     "author": "cairbre <cairbrefr@gmail.com>",
-    "description": "Un chat utilisant WebSocket"
+    "description": "Un chat utilisant WebSocket",
+    "scripts": {
+        "start": "app.js"
+      }
 }
