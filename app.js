@@ -12,24 +12,25 @@ var server = http.createServer(function (req, res) {
 //chargement de socket.io
 var io = require('socket.io').listen(server);
 
-
 io.sockets.on('connection', function (socket) {
     //on récupère le pseudo du client, le type est 'username'
     socket.on('username', function (pseudo) {
         socket.pseudo = pseudo;
         //On log les connexions des clients en console + envoi d'un message au client
-        socket.emit('messageLog', 'Vous êtes connecté !');
-        socket.broadcast.emit('messageLog', pseudo + ' vient de se connecter');
+        socket.emit('logConnect', 'self');
+        socket.broadcast.emit('logConnect', pseudo);
         console.log('Un client est connecté (' + pseudo + ')');
 
     })
 
     //écoute des messages de type 'messageChat'
-    socket.on('messageChat', function (msgchat) {
-        console.log(socket.pseudo, " envoie : ", msgchat)
-
+    .on('messageChat', function (msgchat) {
+        pseudo = socket.pseudo;
+        console.log(pseudo, " envoie : ", msgchat)
         //qu'on renvoie en broadcast pour affichage
-        socket.broadcast.emit('messageChat', msgchat);
+        socket.broadcast.emit('messageChat', {pseudo: pseudo, message: msgchat});
+
+        
     });
 });
 

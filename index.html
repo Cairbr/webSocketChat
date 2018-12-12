@@ -19,6 +19,10 @@
     </p>
 
 
+    <div id="divZoneChat">
+
+    </div>
+
     <!--Au chargement de la page, on demande un pseudo pour identifier le client-->
     <script>
         var pseudo = prompt('Pseudo ?', "client");
@@ -41,17 +45,50 @@
             alert('Le serveur vous indique : ' + message);
         });
         //écoute des messages de type 'messageLog' (évènements à afficher dans le chat)
-        socket.on('messageLog', function (messageLog) {
 
-        });
 
-        //on envoie le message au serveur
+
+        //on envoie le message au serveur et pour affichage sur le client
         document.querySelector('#sendmsg').onclick = function () {
-            
-            socket.emit('messageChat', document.querySelector('#msgchat').value);
+            message = document.querySelector('#msgchat').value;
+            socket.emit('messageChat', message);
+            afficher("chatSelf", "self", message);
         };
 
-        
+        //on écoute les broadcasts d'évènements
+        socket.on('logConnect', function (pseudo, message) {
+            afficher("logConnexion", pseudo, message);
+        });
+
+        //on écoute les broadcasts de messages du chat
+        socket.on('messageChat', function ({ pseudo, message }) {
+            afficher("chatGeneral", pseudo, message);
+        });
+
+        function afficher(evenement, pseudo, message) {
+            console.log('evenement', evenement, 'pseudo', pseudo, 'message', message);
+            var div = document.getElementById('divZoneChat');
+
+            switch (evenement) {
+                case "logConnexion":
+                    if (pseudo == 'self') {
+                        div.innerHTML += '<br/><b><i>' + "Vous êtes connecté" + '</i></b>';
+                    }
+                    else
+                        div.innerHTML += '<br/><i>' + pseudo + " vient de se connecter ! " + '</i>';
+                    break;
+                case "chatGeneral":
+                    div.innerHTML += '<br/>' + pseudo + " dit: " + message;
+                    break;
+                case "chatSelf":
+                    div.innerHTML += '<br/><i>' + "Vous " + " dites: </i>" + message;
+                    break;
+                default:
+                    message = "Erreur"
+            }
+
+
+        };
 
     </script>
 </body>
