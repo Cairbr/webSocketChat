@@ -59,6 +59,10 @@
         socket.on('logConnect', function (pseudo, message) {
             afficher("logConnexion", pseudo, message);
         });
+        socket.on('logDisconnect', function (pseudo, message) {
+            afficher("logDeconnexion", pseudo, message);
+        });
+
 
         //on écoute les broadcasts de messages du chat
         socket.on('messageChat', function ({ pseudo, message }) {
@@ -76,6 +80,13 @@
                     }
                     else
                         div.innerHTML += '<br/><i>' + pseudo + " vient de se connecter ! " + '</i>';
+                    break;
+                case "logDeconnexion":
+                    if (pseudo == 'self') {
+                        div.innerHTML += '<br/><b><i>' + "Vous avez été déconnecté" + '</i></b>';
+                    }
+                    else
+                        div.innerHTML += '<br/><i>' + pseudo + " a été déconnecté" + '</i>';
                     break;
                 case "chatGeneral":
                     div.innerHTML += '<br/>' + pseudo + " dit: " + message;

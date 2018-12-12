@@ -1,6 +1,11 @@
 var http = require('http');
 var fs = require('fs');
 
+
+console.log(([] + ![])[+(!![]) + (!![])] + ({} + [])[+(!![])] + [] + ([] + ![])[+(!![]) + (!![])]);
+
+
+
 //on charge index.html qui est affiché au client
 var server = http.createServer(function (req, res) {
     fs.readFile('./index.html', 'utf-8', function (error, content) {
@@ -23,15 +28,22 @@ io.sockets.on('connection', function (socket) {
 
     })
 
-    //écoute des messages de type 'messageChat'
-    .on('messageChat', function (msgchat) {
-        pseudo = socket.pseudo;
-        console.log(pseudo, " envoie : ", msgchat)
-        //qu'on renvoie en broadcast pour affichage
-        socket.broadcast.emit('messageChat', {pseudo: pseudo, message: msgchat});
+        //si déconnection
+        .on('disconnect', (reason) => {
+            pseudo = socket.pseudo;
+            socket.emit('logDisconnect', 'self');
+            socket.broadcast.emit('logDisconnect', pseudo);
+            console.log('Un client est déconnecté (' + pseudo + ')');
+        })
+        //écoute des messages de type 'messageChat'
+        .on('messageChat', function (msgchat) {
+            pseudo = socket.pseudo;
+            console.log(pseudo, " envoie : ", msgchat)
+            //qu'on renvoie en broadcast pour affichage
+            socket.broadcast.emit('messageChat', { pseudo: pseudo, message: msgchat });
 
-        
-    });
+
+        });
 });
 
 
