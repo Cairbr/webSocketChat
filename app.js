@@ -1,9 +1,22 @@
 var http = require('http');
+var express = require('express');
 var fs = require('fs');
+const path = require('path');
 
 
 console.log(([] + ![])[+(!![]) + (!![])] + ({} + [])[+(!![])] + [] + ([] + ![])[+(!![]) + (!![])]);
 
+
+var app = express();
+
+
+app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.listen(process.env.PORT || 4000, function(){
+    console.log('Your node js server is running');
+});
 
 
 //on charge index.html qui est affiché au client
