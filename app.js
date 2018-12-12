@@ -17,6 +17,8 @@ var server = http.createServer(function (req, res) {
 //chargement de socket.io
 var io = require('socket.io').listen(server);
 
+var listeConnectes = [];
+
 io.sockets.on('connection', function (socket) {
     //on récupère le pseudo du client, le type est 'username'
     socket.on('username', function (pseudo) {
@@ -25,6 +27,8 @@ io.sockets.on('connection', function (socket) {
         socket.emit('logConnect', 'self');
         socket.broadcast.emit('logConnect', pseudo);
         console.log('Un client est connecté (' + pseudo + ')');
+        //on actualise la liste des connectés
+
 
     })
 
